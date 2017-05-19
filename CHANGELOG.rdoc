@@ -1,5 +1,10 @@
 = Simple SDK Builder
 
+== Version 2.0.0
+* upgrade to rail5 gems
+* upgrade to ruby 2.3.1
+* fix and upgrade tests
+
 == Version 1.2.0
 * Adding ability to designate a nested attribute as "signular", so it will be nil instead of an empty array when missing
 
