@@ -4,3 +4,4 @@
 .*.swp
 .bundle
 bundle
+coverage/
