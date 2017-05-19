@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    simple_sdk_builder (2.0.0)
-      activemodel (~> 5.0)
-      activesupport (~> 5.0)
+    simple_sdk_builder (2.0.1)
+      activemodel (>= 4.2, < 6)
+      activesupport (>= 4.2, < 6)
       simply_configurable (~> 0.2)
       typhoeus (~> 1.0)
 

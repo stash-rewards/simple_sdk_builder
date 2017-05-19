@@ -1,5 +1,8 @@
 = Simple SDK Builder
 
+== Version 2.0.1
+* allow rails 4.2 and rails 5
+
 == Version 2.0.0
 * upgrade to rail5 gems
 * upgrade to ruby 2.3.1
