@@ -66,27 +66,24 @@ module SimpleSDKBuilder
           'Content-Type' => 'application/json'
         }.merge(options[:headers] || {})
 
-        hydra = config[:hydra] || Typhoeus::Hydra.new
-
         url = "#{options[:service_url]}#{options[:path]}"
 
         request_body = options[:body]
         request_body = request_body.to_json if request_body && !request_body.is_a?(String)
 
-        request = Typhoeus::Request.new url,
-                                        method: options[:method],
-                                        timeout: options[:timeout],
-                                        headers: options[:headers],
-                                        params: options[:params],
-                                        body: request_body
+        request = Typhoeus::Request.new(
+          url,
+          method: options[:method],
+          timeout: options[:timeout],
+          headers: options[:headers],
+          params: options[:params],
+          body: request_body
+        )
 
         logger.debug "running HTTP #{options[:method]}: #{url}; PARAMS: #{options[:params]}; " \
           "BODY: #{request_body};"
 
-        hydra.queue(request)
-        hydra.run
-
-        response = request.response
+        response = request.run
 
         logger.debug "received response code #{response.code}; BODY: #{response.body};"
 

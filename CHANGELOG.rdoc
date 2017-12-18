@@ -1,6 +1,7 @@
 = Simple SDK Builder
 
-== UNRELEASED
+== 2.1.0
+* remove the hydra option since it's not uses and is excessive overhead
 * update ruby version
 * update dev & test gems
 * add rubocop

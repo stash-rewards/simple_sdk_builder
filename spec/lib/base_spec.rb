@@ -86,7 +86,7 @@ RSpec.describe SimpleSDKBuilder::Base do
     end
   end
 
-  context 'with a service url and stubbed hydra instance configured' do
+  context 'with a service url and stubbed typhoeus instance configured' do
     before do
       response = Typhoeus::Response.new(code: 200, body: '{"foo":"bar"}')
       Typhoeus.stub(/davidmdawson/).and_return(response)
