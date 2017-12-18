@@ -1,20 +1,18 @@
+# frozen_string_literal: true
+
 module SimpleSDKBuilder
-class SearchResults
+  class SearchResults
+    attr_reader :result_count, :links, :results
 
-  attr_reader :result_count, :links, :results
+    def initialize(response, type)
+      @result_count = response.headers['X-Count'].to_s.to_i
 
-  def initialize(response, type)
-    @result_count = response.headers['X-Count'].to_s.to_i
-
-    @links = {}
-    response.headers['Link'].to_s.split(',').each do |link|
-      if link =~ /<(.*)>; rel="(.*)"/
-        @links[$2] = $1
+      @links = {}
+      response.headers['Link'].to_s.split(',').each do |link|
+        @links[Regexp.last_match(2)] = Regexp.last_match(1) if link.match?(/<(.*)>; rel="(.*)"/)
       end
+
+      @results = response.build(type)
     end
-
-    @results = response.build(type)
   end
-
-end
 end
