@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 gemspec
@@ -12,13 +14,13 @@ group :test do
 end
 
 group :development, :test do
-  gem 'dotenv'
   gem 'byebug'
+  gem 'dotenv'
   gem 'pry'
   gem 'pry-byebug'
   gem 'rubocop'
 
-  ['activemodel', 'activesupport'].each do |rails_gem|
+  %w[activemodel activesupport].each do |rails_gem|
     gem rails_gem, '~> 5.0.3'
   end
 end
