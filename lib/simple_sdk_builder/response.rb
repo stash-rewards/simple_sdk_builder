@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'json'
-
 module SimpleSDKBuilder
   class Response
     def initialize(typhoeus_response)
