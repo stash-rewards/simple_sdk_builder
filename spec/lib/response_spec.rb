@@ -1,4 +1,4 @@
-include SimpleSDKBuilder
+# frozen_string_literal: true
 
-RSpec.describe Response do
+RSpec.describe SimpleSDKBuilder::Response do
 end

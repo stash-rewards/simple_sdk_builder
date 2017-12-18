@@ -1,4 +1,4 @@
-include SimpleSDKBuilder
+# frozen_string_literal: true
 
-RSpec.describe Resource do
+RSpec.describe SimpleSDKBuilder::Resource do
 end

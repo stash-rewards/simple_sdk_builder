@@ -1,4 +1,4 @@
-include SimpleSDKBuilder
+# frozen_string_literal: true
 
-RSpec.describe SearchResults do
+RSpec.describe SimpleSDKBuilder::SearchResults do
 end

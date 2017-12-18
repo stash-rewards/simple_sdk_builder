@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 RSpec.describe SimpleSDKBuilder::Base do
   class MockResponse
     attr_accessor :timed_out, :code, :body
 
-    def initialize(options = {})
+    def initialize(options = {}) # rubocop:disable Style/OptionHash
       self.timed_out = false
       self.code = 200
-      self.body = %{{"value":"it worked!"}}
+      self.body = %({"value":"it worked!"})
 
       options.each do |key, value|
-        self.send("#{key}=", value)
+        public_send("#{key}=", value)
       end
     end
 
@@ -56,7 +58,8 @@ RSpec.describe SimpleSDKBuilder::Base do
       end
 
       it 'should raise a not_found_error with a 404 status code' do
-        expect { subject.check_response(MockResponse.new(code: 404)) }.to raise_error(not_found_error)
+        expect { subject.check_response(MockResponse.new(code: 404)) }
+          .to raise_error(not_found_error)
       end
 
       it 'should raise a server_error with a 503 status code' do
@@ -68,16 +71,17 @@ RSpec.describe SimpleSDKBuilder::Base do
       end
 
       it 'should raise a timeout_error upon a timeout' do
-        expect { subject.check_response(MockResponse.new(timed_out: true, code: nil)) }.to raise_error(timeout_error)
+        expect { subject.check_response(MockResponse.new(timed_out: true, code: nil)) }
+          .to raise_error(timeout_error)
       end
-
     end
 
     context 'a subclass' do
       subject { Class.new(base_class) }
 
       it "should use parent's not_found_error" do
-        expect { subject.check_response(MockResponse.new(code: 404)) }.to raise_error(not_found_error)
+        expect { subject.check_response(MockResponse.new(code: 404)) }
+          .to raise_error(not_found_error)
       end
     end
   end
