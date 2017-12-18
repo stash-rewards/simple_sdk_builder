@@ -1,6 +1,4 @@
-include SimpleSDKBuilder
-
-RSpec.describe Base do
+RSpec.describe SimpleSDKBuilder::Base do
   class MockResponse
     attr_accessor :timed_out, :code, :body
 
