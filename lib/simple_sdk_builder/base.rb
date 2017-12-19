@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'active_model'
+require 'faraday'
 require 'simply_configurable'
-require 'typhoeus'
 
 module SimpleSDKBuilder
   module Base
@@ -24,6 +24,8 @@ module SimpleSDKBuilder
         '*' => UnknownError
       }
       klass.config logger: default_logger
+      klass.config adapter: Faraday.default_adapter
+      klass.config stubs: nil # THIS IS FOR TESTS ONLY
     end
 
     def ==(other)
@@ -71,28 +73,27 @@ module SimpleSDKBuilder
         request_body = options[:body]
         request_body = request_body.to_json if request_body && !request_body.is_a?(String)
 
-        request = Typhoeus::Request.new(
-          url,
-          method: options[:method],
-          timeout: options[:timeout],
-          headers: options[:headers],
-          params: options[:params],
-          body: request_body
-        )
-
         logger.debug "running HTTP #{options[:method]}: #{url}; PARAMS: #{options[:params]}; " \
           "BODY: #{request_body};"
 
-        response = request.run
+        connection = Faraday.new(url: url) do |builder|
+          builder.adapter options[:adapter], options[:stubs]
+        end
+        response = connection.public_send(options[:method]) do |req|
+          req.options.timeout = options[:timeout]
+          req.headers = options[:headers]
+          req.params = options[:params] if options[:params]
+          req.body = request_body if request_body
+        end
 
-        logger.debug "received response code #{response.code}; BODY: #{response.body};"
+        logger.debug "received response status #{response.status}; BODY: #{response.body};"
 
         check_response(response)
         Response.new(response)
       end
 
       def check_response(response)
-        return if response.code.to_s.start_with?('2')
+        return if response.status.to_s.start_with?('2')
 
         error_handlers = config[:error_handlers] || {}
 
@@ -103,21 +104,21 @@ module SimpleSDKBuilder
         # search for exact match
         error_handlers.each do |key, error|
           if key.is_a?(Integer) || key.is_a?(String) || key.is_a?(Symbol)
-            raise error, response if response.code.to_s == key.to_s
+            raise error, response if response.status.to_s == key.to_s
           end
         end
 
         # search for regex match
         error_handlers.each do |key, error|
           if key.is_a?(Regexp)
-            raise error, response if !!(key =~ response.code.to_s)
+            raise error, response if !!(key =~ response.status.to_s)
           end
         end
 
         raise_response_error(
           error_handlers['*'],
           response,
-          "an error occurred with the response; code: #{response.code}; body: #{response.body};"
+          "an error occurred with the response; status: #{response.status}; body: #{response.body};"
         )
       end
 

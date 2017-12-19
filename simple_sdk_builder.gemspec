@@ -23,6 +23,6 @@ Gem::Specification.new do |s|
   # dependencies
   s.add_dependency 'activemodel', '>= 4.2', '< 6'
   s.add_dependency 'activesupport', '>= 4.2', '< 6'
+  s.add_dependency 'faraday', '~> 0.13'
   s.add_dependency 'simply_configurable', '~> 0.2'
-  s.add_dependency 'typhoeus', '~> 1.0'
 end

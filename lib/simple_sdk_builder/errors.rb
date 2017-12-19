@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require 'typhoeus'
+require 'faraday'
 
 module SimpleSDKBuilder
   # An abstract super-class of all other SimpleSDKBuilder Error classes
   class Error < StandardError
-    attr_reader :code
+    attr_reader :status
 
     def initialize(response)
-      if response.is_a?(Typhoeus::Response)
-        @code = response.code
+      if response.is_a?(Faraday::Response)
+        @status = response.status
         super(response.body)
       else
         super(response.to_s)

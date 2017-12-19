@@ -2,24 +2,25 @@
 
 module SimpleSDKBuilder
   class Response
-    def initialize(typhoeus_response)
-      @typhoeus_response = typhoeus_response
+    def initialize(faraday_response)
+      @faraday_response = faraday_response
     end
 
-    def code
-      @typhoeus_response.code
+    def status
+      @faraday_response.status
     end
+    alias code status
 
     def time
-      @typhoeus_response.time
+      @faraday_response.time
     end
 
     def headers
-      @typhoeus_response.headers_hash
+      @faraday_response.headers
     end
 
     def body
-      @typhoeus_response.body
+      @faraday_response.body
     end
 
     def parsed_body
