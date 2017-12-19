@@ -1,16 +1,16 @@
-include SimpleSDKBuilder
+# frozen_string_literal: true
 
-RSpec.describe Base do
+RSpec.describe SimpleSDKBuilder::Base do
   class MockResponse
-    attr_accessor :timed_out, :code, :body
+    attr_accessor :timed_out, :status, :body
 
-    def initialize(options = {})
+    def initialize(options = {}) # rubocop:disable Style/OptionHash
       self.timed_out = false
-      self.code = 200
-      self.body = %{{"value":"it worked!"}}
+      self.status = 200
+      self.body = %({"value":"it worked!"})
 
       options.each do |key, value|
-        self.send("#{key}=", value)
+        public_send("#{key}=", value)
       end
     end
 
@@ -24,8 +24,6 @@ RSpec.describe Base do
       include SimpleSDKBuilder::Base
     end
   end
-
-  before { Typhoeus::Expectation.clear }
 
   subject { base_class }
 
@@ -53,43 +51,48 @@ RSpec.describe Base do
     subject { base_class }
 
     context 'the check_response method' do
-      it 'should return successfully with a 200 status code' do
+      it 'should return successfully with a 200 status' do
         expect { subject.check_response(MockResponse.new) }.not_to raise_error
       end
 
-      it 'should raise a not_found_error with a 404 status code' do
-        expect { subject.check_response(MockResponse.new(code: 404)) }.to raise_error(not_found_error)
+      it 'should raise a not_found_error with a 404 status' do
+        expect { subject.check_response(MockResponse.new(status: 404)) }
+          .to raise_error(not_found_error)
       end
 
-      it 'should raise a server_error with a 503 status code' do
-        expect { subject.check_response(MockResponse.new(code: 503)) }.to raise_error(server_error)
+      it 'should raise a server_error with a 503 status' do
+        expect { subject.check_response(MockResponse.new(status: 503)) }
+          .to raise_error(server_error)
       end
 
-      it 'should raise an unknown_error with a 301 status code' do
-        expect { subject.check_response(MockResponse.new(code: 301)) }.to raise_error(unknown_error)
+      it 'should raise an unknown_error with a 301 status' do
+        expect { subject.check_response(MockResponse.new(status: 301)) }
+          .to raise_error(unknown_error)
       end
 
       it 'should raise a timeout_error upon a timeout' do
-        expect { subject.check_response(MockResponse.new(timed_out: true, code: nil)) }.to raise_error(timeout_error)
+        expect { subject.check_response(MockResponse.new(timed_out: true, status: nil)) }
+          .to raise_error(timeout_error)
       end
-
     end
 
     context 'a subclass' do
       subject { Class.new(base_class) }
 
       it "should use parent's not_found_error" do
-        expect { subject.check_response(MockResponse.new(code: 404)) }.to raise_error(not_found_error)
+        expect { subject.check_response(MockResponse.new(status: 404)) }
+          .to raise_error(not_found_error)
       end
     end
   end
 
-  context 'with a service url and stubbed hydra instance configured' do
+  context 'with a service url and stubbed typhoeus instance configured' do
     before do
-      response = Typhoeus::Response.new(code: 200, body: '{"foo":"bar"}')
-      Typhoeus.stub(/davidmdawson/).and_return(response)
+      stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+        stub.get('/') { |_env| [200, {}, '{"foo":"bar"}'] }
+      end
 
-      base_class.config service_url: 'https://api.davidmdawson.com'
+      base_class.config service_url: 'https://api.davidmdawson.com', adapter: :test, stubs: stubs
     end
 
     it 'should default to a GET /' do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'simplecov'
 
 SimpleCov.start do
@@ -7,5 +9,5 @@ SimpleCov.start do
   add_filter 'spec/'
   add_filter 'lib/simple_sdk_builder/version'
 
-  minimum_coverage 35
+  minimum_coverage 59
 end

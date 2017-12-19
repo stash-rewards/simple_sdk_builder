@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file should require or autoload the implementation of this gem
 #
 # Example:
@@ -11,10 +13,8 @@
 require 'simple_sdk_builder/errors'
 
 module SimpleSDKBuilder
-
   autoload :Base, 'simple_sdk_builder/base'
   autoload :Resource, 'simple_sdk_builder/resource'
   autoload :Response, 'simple_sdk_builder/response'
   autoload :SearchResults, 'simple_sdk_builder/search_results'
-
 end
