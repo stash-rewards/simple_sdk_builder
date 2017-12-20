@@ -9,5 +9,5 @@ SimpleCov.start do
   add_filter 'spec/'
   add_filter 'lib/simple_sdk_builder/version'
 
-  minimum_coverage 59
+  minimum_coverage 62
 end

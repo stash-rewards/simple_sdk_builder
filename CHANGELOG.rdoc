@@ -1,5 +1,8 @@
 = Simple SDK Builder
 
+== 2.1.1
+* Fix broken timeout logic
+
 == 2.1.0
 * replace Typheous with Faraday, replace code with status
 * update ruby version

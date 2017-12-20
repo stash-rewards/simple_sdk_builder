@@ -5,17 +5,12 @@ RSpec.describe SimpleSDKBuilder::Base do
     attr_accessor :timed_out, :status, :body
 
     def initialize(options = {}) # rubocop:disable Style/OptionHash
-      self.timed_out = false
       self.status = 200
       self.body = %({"value":"it worked!"})
 
       options.each do |key, value|
         public_send("#{key}=", value)
       end
-    end
-
-    def timed_out?
-      @timed_out
     end
   end
 
@@ -69,10 +64,13 @@ RSpec.describe SimpleSDKBuilder::Base do
         expect { subject.check_response(MockResponse.new(status: 301)) }
           .to raise_error(unknown_error)
       end
+    end
 
-      it 'should raise a timeout_error upon a timeout' do
-        expect { subject.check_response(MockResponse.new(timed_out: true, status: nil)) }
-          .to raise_error(timeout_error)
+    context 'when the request times out' do
+      before { base_class.config timeout: 0.00001, service_url: 'https://www.stashrewards.com' }
+
+      it 'raises the right error' do
+        expect { subject.json_request }.to raise_error(timeout_error, 'execution expired')
       end
     end
 
