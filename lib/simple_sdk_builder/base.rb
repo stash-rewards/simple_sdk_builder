@@ -79,11 +79,16 @@ module SimpleSDKBuilder
         connection = Faraday.new(url: url) do |builder|
           builder.adapter options[:adapter], options[:stubs]
         end
-        response = connection.public_send(options[:method]) do |req|
-          req.options.timeout = options[:timeout]
-          req.headers = options[:headers]
-          req.params = options[:params] if options[:params]
-          req.body = request_body if request_body
+        begin
+          response = connection.public_send(options[:method]) do |req|
+            req.options.timeout = options[:timeout]
+            req.headers = options[:headers]
+            req.params = options[:params] if options[:params]
+            req.body = request_body if request_body
+          end
+        rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
+          error_handlers = config[:error_handlers] || {}
+          raise_response_error(error_handlers[nil], response, e.message)
         end
 
         logger.debug "received response status #{response.status}; BODY: #{response.body};"
@@ -96,10 +101,6 @@ module SimpleSDKBuilder
         return if response.status.to_s.start_with?('2')
 
         error_handlers = config[:error_handlers] || {}
-
-        if response.timed_out?
-          raise_response_error(error_handlers[nil], response, 'timed out before receiving response')
-        end
 
         # search for exact match
         error_handlers.each do |key, error|
@@ -129,11 +130,10 @@ module SimpleSDKBuilder
       private
 
       def raise_response_error(error_handler, response, default_message)
-        if error_handler
-          raise error_handler, response
-        else
-          raise StandardError, default_message
-        end
+        raise StandardError, default_message unless error_handler
+        raise error_handler, response if response
+
+        raise error_handler, default_message
       end
     end
   end
