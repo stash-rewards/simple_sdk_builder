@@ -1,5 +1,8 @@
 = Simple SDK Builder
 
+== 2.2.0
+* Allowed to load the response body with an alternate body for caching
+
 == 2.1.1
 * Fix broken timeout logic
 
