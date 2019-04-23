@@ -20,14 +20,15 @@ module SimpleSDKBuilder
     end
 
     def body
-      @faraday_response.body
+      @body ||= @faraday_response.body
     end
 
     def parsed_body
       @parsed_body ||= JSON.parse(body)
     end
 
-    def build(type)
+    def build(type, alt_body = nil)
+      @body = alt_body
       if parsed_body.is_a?(Array)
         parsed_body.map { |value| type.new.from_json(value.to_json) }
       else
