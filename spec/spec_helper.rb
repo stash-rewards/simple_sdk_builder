@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'logger' # must load before activesupport (concurrent-ruby >= 1.3.5 no longer pulls it in)
 require 'support/simplecov_setup'
 require 'simple_sdk_builder'
 

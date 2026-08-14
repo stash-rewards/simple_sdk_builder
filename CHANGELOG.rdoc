@@ -1,5 +1,8 @@
 = Simple SDK Builder
 
+== 2.2.1
+* Widen activemodel/activesupport ceiling to < 7 (Rails 6.x support); no code changes
+
 == 2.2.0
 * Allowed to load the response body with an alternate body for caching
 
