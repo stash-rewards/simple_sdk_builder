@@ -21,6 +21,6 @@ group :development, :test do
   gem 'rubocop'
 
   %w[activemodel activesupport].each do |rails_gem|
-    gem rails_gem, '~> 5.0.3'
+    gem rails_gem, ENV.fetch('TEST_RAILS', '~> 6.1.0')
   end
 end

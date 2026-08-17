@@ -21,8 +21,8 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   # dependencies
-  s.add_dependency 'activemodel', '>= 4.2', '< 6'
-  s.add_dependency 'activesupport', '>= 4.2', '< 6'
+  s.add_dependency 'activemodel', '>= 4.2', '< 7'
+  s.add_dependency 'activesupport', '>= 4.2', '< 7'
   s.add_dependency 'faraday', '~> 0.13'
   s.add_dependency 'simply_configurable', '~> 0.2'
 end
