@@ -70,7 +70,9 @@ RSpec.describe SimpleSDKBuilder::Base do
       before { base_class.config timeout: 0.00001, service_url: 'https://www.stashrewards.com' }
 
       it 'raises the right error' do
-        expect { subject.json_request }.to raise_error(timeout_error, 'execution expired')
+        # Ruby >= 3 keeps net/http's wrapping ("Failed to open TCP connection to ...
+        # (execution expired)"); Ruby 2's timeout.rb reset the message to the bare string.
+        expect { subject.json_request }.to raise_error(timeout_error, /execution expired/)
       end
     end
 
