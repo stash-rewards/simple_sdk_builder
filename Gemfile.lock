@@ -102,6 +102,7 @@ GEM
 
 PLATFORMS
   aarch64-linux
+  ruby
 
 DEPENDENCIES
   activemodel (~> 6.1.0)
@@ -117,4 +118,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-   2.2.4
+   2.4.19
