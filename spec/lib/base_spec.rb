@@ -22,6 +22,82 @@ RSpec.describe SimpleSDKBuilder::Base do
 
   subject { base_class }
 
+  describe '#==' do
+    let(:resource_class) do
+      Class.new do
+        include SimpleSDKBuilder::Base
+        include SimpleSDKBuilder::Resource
+
+        simple_sdk_attribute :id, :name
+      end
+    end
+
+    let(:other_resource_class) do
+      Class.new do
+        include SimpleSDKBuilder::Base
+        include SimpleSDKBuilder::Resource
+
+        simple_sdk_attribute :id
+      end
+    end
+
+    let(:resource_without_id_class) do
+      Class.new do
+        include SimpleSDKBuilder::Base
+        include SimpleSDKBuilder::Resource
+
+        simple_sdk_attribute :date, :rate
+      end
+    end
+
+    it 'treats the same class with the same id as equal' do
+      a = resource_class.new(id: 1, name: 'a')
+      b = resource_class.new(id: 1, name: 'b')
+
+      expect(a).to eq(b)
+      expect(a).to eql(b)
+      expect(a.hash).to eq(b.hash)
+      expect([a, b].uniq.size).to eq(1)
+    end
+
+    it 'treats different ids as not equal' do
+      expect(resource_class.new(id: 1)).not_to eq(resource_class.new(id: 2))
+    end
+
+    it 'treats objects without an id as equal only to themselves' do
+      a = resource_class.new(name: 'a')
+
+      expect(a).to eq(a)
+      expect(a).not_to eq(resource_class.new(name: 'a'))
+    end
+
+    it 'treats different classes with the same id as not equal' do
+      expect(resource_class.new(id: 1)).not_to eq(other_resource_class.new(id: 1))
+    end
+
+    it 'returns false rather than raising for objects that have no id' do
+      a = resource_class.new(id: 1)
+
+      [nil, {}, { 'id' => 1 }, 'string', 1, :symbol, Object.new].each do |other|
+        expect(a == other).to be(false)
+        expect(a.eql?(other)).to be(false)
+      end
+    end
+
+    it 'falls back to identity for a resource class without an id attribute' do
+      a = resource_without_id_class.new(date: '2026-10-05', rate: 100)
+
+      expect(a == a).to be(true)
+      expect(a == resource_without_id_class.new(date: '2026-10-05', rate: 100)).to be(false)
+      expect(a == nil).to be(false)
+      expect(a.hash).to eq(a.hash)
+    end
+
+    it 'can be compared with true, as ActiveSupport::Cache::Entry#dup_value! does' do
+      expect(resource_class.new(id: 1) == true).to be(false)
+    end
+  end
+
   it 'can be configured with a :service_url' do
     url = 'https://api.davidmdawson.com'
     base_class.config service_url: url

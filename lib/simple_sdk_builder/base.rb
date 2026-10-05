@@ -28,12 +28,21 @@ module SimpleSDKBuilder
       klass.config stubs: nil # THIS IS FOR TESTS ONLY
     end
 
+    # Two SDK objects are equal when they are the same class and share a non-nil id. Anything
+    # else (nil, a Hash, another class, or a resource without an id) is only equal to itself.
     def ==(other)
-      equal?(other) || (id && id == other.id && self.class == other.class)
+      return true if equal?(other)
+      return false unless other.class == self.class && respond_to?(:id)
+
+      !id.nil? && id == other.id
     end
 
     def eql?(other)
       self == other
+    end
+
+    def hash
+      respond_to?(:id) && !id.nil? ? [self.class, id].hash : super
     end
 
     def json_request(options = {})
