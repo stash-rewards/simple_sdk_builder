@@ -1,5 +1,10 @@
 = Simple SDK Builder
 
+== 2.2.2
+* SDK object equality no longer raises: #== returns false for nil, non-SDK objects, other classes,
+  and resources without an id, instead of calling #id on them
+* Add #hash consistent with #eql? so uniq, Set and Hash keys agree with #==
+
 == 2.2.1
 * Widen activemodel/activesupport ceiling to < 7 (Rails 6.x support); no code changes
 
