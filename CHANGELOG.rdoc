@@ -1,5 +1,9 @@
 = Simple SDK Builder
 
+== 2.3.0
+* Widen activemodel/activesupport to >= 6.1, < 8.2 (Rails 7.x and 8.0/8.1 support); no code changes.
+  Tested on Rails 6.1 (Ruby 3.2.11) and 8.1.4.1 (Ruby 3.2.11 and 3.4.12); faraday stays ~> 0.13
+
 == 2.2.2
 * SDK object equality no longer raises: #== returns false for nil, non-SDK objects, other classes,
   and resources without an id, instead of calling #id on them

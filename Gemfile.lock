@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    simple_sdk_builder (2.2.2)
-      activemodel (>= 4.2, < 7)
-      activesupport (>= 4.2, < 7)
+    simple_sdk_builder (2.3.0)
+      activemodel (>= 6.1, < 8.2)
+      activesupport (>= 6.1, < 8.2)
       faraday (~> 0.13)
       simply_configurable (~> 0.2)
 
